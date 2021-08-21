@@ -6,7 +6,8 @@
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "import": "node import.js"
   },
   "engines": {
     "node": "14"
@@ -16,7 +17,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase-admin": "^9.8.0",
-    "firebase-functions": "^3.14.1"
+    "firebase-functions": "^3.14.1",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"
