@@ -7,21 +7,22 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.get('/test', (req,res) => {
-  res.send('🍿 Movie Finder')
-})
 
-app.get('/movies', (req, res) => {
-  for(let i=0; i < 2; i++){
-    getMovies(i)
-  }
-  res.send('OK')
-})
-// 1. Pull movies from firebase
-// 2. URL parameters or query string should let you pass in genre and decade
+
 app.get('/movies/:genre/:decade', getMovies)
 
+app.get('/genres', (req, res) =>
+  {
+    db.collection('genres')
+    .get()
+    .then(allGenres => {
+      let genre = allGenres.docs.map(doc => doc.data())
+      res.json(genre)
 
+    })
+});
+
+// app.use('/movies', APIRouter)
 exports.app = functions.https.onRequest(app)
 
 
