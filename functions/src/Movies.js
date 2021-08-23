@@ -15,17 +15,24 @@ exports.getMovies = (req, res) => {
   // /movies/:genre/:decade
   const genre = req.params.genre
   if (isNaN(genre)) {
-    res.sent("WTF dude. that's not a valid genre")
+    res.sent("that's not a valid genre")
     return;
   }
   const decade = req.params.decade
   if (isNaN(decade)) {
-    res.sent("WTF dude. that's not a valid decade")
+    res.sent("that's not a valid decade")
     return;
   }
   const db = connectDB()
   console.log(`Genre:${genre} decade:${decade}`)
+  const decadeStartDate = new Date(`${decade}-1-1`); // 1980-01-01
+  const decadeEndDate = new Date(`${Number(decade)+9}-12-31`); // 1989-12-31
   db.collection('movies')
+    .where('release_date', '>', decadeStartDate)
+    .where('release_date', '<', decadeEndDate)
+    .where('popularity', '>', 1000)
+    .orderBy('popularity', 'desc')
+    .limit(100)
     .get()
     .then(allMovies => {
       let movies = allMovies.docs.map(doc => doc.data())
@@ -34,27 +41,6 @@ exports.getMovies = (req, res) => {
         movies = movies.filter(movie => movie.genre_ids.includes(Number(genre)))
       } else {
         // Oh! You DON'T want to filter. That's cool. I won't do anything to the list (I won't filter it)
-      }
-      if (decade != "0") // if "0" then do NOT filter by decade
-      {
-        //release_date
-        movies = movies.filter(movie => {
-          // example decode is 2000
-          let releasedate = new Date(movie.release_date); // 1986-03-07
-          let decadeStartDate = new Date(`${decade}-1-1`); // 1980-01-01
-          let decadeEndDate = new Date(`${Number(decade)+9}-12-31`); // 1989-12-31
-          //console.log(`${movie.release_date} ${(releasedate >= decadeStartDate)} ${(releasedate <= decadeEndDate)}`)
-          if (   
-              (releasedate >= decadeStartDate) && 
-              (releasedate <= decadeEndDate )
-              )
-          {
-              return true; // yes the releaseDate is between the start of the decade and the end of the decade
-          } else {
-              return false; // NOPE! filter out this movie.
-          }
-
-        } )
       }
 
       // Randomize the list and return up to 6.
