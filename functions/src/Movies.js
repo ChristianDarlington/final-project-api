@@ -15,17 +15,17 @@ exports.getMovies = (req, res) => {
   // /movies/:genre/:decade
   const genre = req.params.genre
   if (isNaN(genre)) {
-    res.sent("WTF dude. that's not a valid genre")
+    res.send("That's not a valid genre")
     return;
   }
   const decade = req.params.decade
   if (isNaN(decade)) {
-    res.sent("WTF dude. that's not a valid decade")
+    res.send("That's not a valid decade")
     return;
   }
   const db = connectDB()
   console.log(`Genre:${genre} decade:${decade}`)
-  db.collection('movies')
+  db.collection('movies-2')
     .get()
     .then(allMovies => {
       let movies = allMovies.docs.map(doc => doc.data())
@@ -61,7 +61,7 @@ exports.getMovies = (req, res) => {
       movies = movies.sort(() => (Math.random() > .5) ? 1 : -1); // Math.random() returns between 0-1 and just use for sort.
 
       // return top 6
-      movies = movies.slice(0,6);
+      movies = movies.slice(0,4);
 
 
       res.json(movies)
