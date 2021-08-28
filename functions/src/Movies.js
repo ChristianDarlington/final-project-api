@@ -62,7 +62,7 @@ exports.getAllMovies = (req, res) => {
   const db = connectDB()
  
   db.collection('movies-2')
-    .limit(50)
+    .limit(2000)
     .get()
     .then(allMovies => {
       let movies = allMovies.docs.map(doc => doc.data())
